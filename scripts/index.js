@@ -19,6 +19,45 @@ var control_input_enabled = true;
 
 function setup() {
 
+  console.log("Setting Up")
+
+  var LStick_Horiz = 0
+  var LStick_Vert = 0
+  var RStick_Horiz = 0
+  var RStick_Vert = 0
+  var Triggers = 0
+
+  var joys = { LStick_Horiz, LStick_Vert, RStick_Horiz, RStick_Vert, Triggers }
+
+  var A_button = false
+  var B_button = false
+  var X_button = false
+  var Y_button = false
+  var L_Shoulder = false
+  var R_Shoulder = false
+  var Back_button = false
+  var Start_button = false
+  var LStick_Press = false
+  var RStick_Press = false
+
+  var butt = { A_button, B_button, X_button, Y_button, L_Shoulder, R_Shoulder, Back_button, Start_button, LStick_Press, RStick_Press }
+
+  var dpad_up = false
+  var dpad_right = false
+  var dpad_down = false
+  var dpad_left = false
+
+  var dpad = { dpad_up, dpad_right, dpad_down, dpad_left }
+
+  var speed = 2.5;
+  var rot_speed = 1;
+  var fast_axis1_speed = 30;
+  var max_allowed_rates = [30, 4, 4, 10, 15, 30]
+
+  var theta = [1, 2, 3, 4, 5, 6]
+  var out = updateIK(theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, max_allowed_rates)
+  console.log(out)
+
   // Establish all element references for later use
   ros_status = $('#ros_status_output');
 
@@ -124,7 +163,7 @@ function handle_analog_input(event) {
   last_control_input = Date.now();
 }
 
-function handle_button_input(event) {}
+function handle_button_input(event) { }
 
 function enable_control_input(event) {
   control_input_enabled = true;
@@ -165,7 +204,7 @@ function update_battery(message) {
   }
 
   $('#battery_voltage').text((message.batteryVoltage).toFixed(1) + 'V');
-  $('#battery_voltage').attr('style', `width: ${((message.batteryVoltage-24)/(34-24))*100}%`);
+  $('#battery_voltage').attr('style', `width: ${((message.batteryVoltage - 24) / (34 - 24)) * 100}%`);
   $('#battery_voltage').removeClass(['bg-warning', 'bg-success', 'bg-danger']);
 
   if (message.batteryVoltage > 30) {
