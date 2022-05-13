@@ -95,104 +95,114 @@
         <canvas class="border" style="width:100%;height:100%" id="arm_display">
         </canvas>
       </div>
-      <div class="flex-column w-25">
-        <div class="flex-column flex-fill">
+      <div class="d-flex flex-column w-25">
+        <div class="card h-50">
           <div class="card-body">
-            <h4 class="card-title">Arm Controls</h4>
-            <!-- <textarea class="form-control h-75" id="autonomous_navigation_status_output" readonly></textarea> -->
-            <!-- <ul class="list-group list-group-flush">
-                  <li class="list-group-item text-muted"></li>
-                </ul>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="">Coords</span>
+            <h4 class="card-title">Arm Dashboard</h4>
+            <div class="d-flex flex-column">
+              <div class="btn-group btn-group-toggle d-flex my-2" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                  <input type="radio" name="enable_arm_control" id="enable_arm" autocomplete="off" checked />
+                  Energize Arm
+                </label>
+                <label class="btn btn-primary">
+                  <input type="radio" name="enable_arm_control" id="disable_arm" autocomplete="off" />
+                  De-energize Arm
+                </label>
+              </div>
+              <div class="btn-group my-2" role="group">
+                <button type="button" class="btn btn-primary">Request Homing</button>
+                <button type="button" class="btn btn-primary">A2&lt;10&deg;</button>
+              </div>
+              <div class="btn-group my-2" role="group">
+                <button type="button" class="btn btn-warning">Force Homing</button>
+                <button type="button" class="btn btn-warning">A2&lt;10&deg;</button>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Axis 1</h5>
+                </div>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">0 deg</div>
                   </div>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Latitude"
-                    aria-label="Latitude"
-                    id="latitude_next_leg"
-                  />
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Longitude"
-                    aria-label="Longitude"
-                    id="longitude_next_leg"
-                  />
                 </div>
-  
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item text-muted"></li>
-                </ul>
-  
-                <div
-                  class="btn-group btn-group-toggle btn-block"
-                  data-toggle="buttons"
-                >
-                  <label class="btn btn-primary active">
-                    <input
-                      type="radio"
-                      name="next_leg_type"
-                      id="post"
-                      autocomplete="off"
-                      checked
-                    />
-                    Post
-                  </label>
-                  <label class="btn btn-primary">
-                    <input
-                      type="radio"
-                      name="next_leg_type"
-                      id="gate"
-                      autocomplete="off"
-                    />
-                    Gate
-                  </label>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Axis 2</h5>
                 </div>
-  
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item text-muted"></li>
-                </ul>
-  
-                <div class="btn-group btn-group-toggle btn-block">
-                  <label class="btn btn-success">
-                    <input
-                      type="radio"
-                      name="autonomous_navigation_action"
-                      id="navigate_next_leg"
-                      autocomplete="off"
-                    />
-                    Navigate
-                  </label>
-                  <label class="btn btn-danger">
-                    <input
-                      type="radio"
-                      name="autonomous_navigation_action"
-                      id="abort"
-                      autocomplete="off"
-                    />
-                    Abort
-                  </label>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">0 deg</div>
+                  </div>
                 </div>
-  
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item text-muted">
-                    Status
-                    <textarea
-                      class="form-control h-75"
-                      id="autonomous_navigation_status_output"
-                      readonly
-                    ></textarea>
-                  </li>
-                </ul> -->
-          </div>
-        </div>
-        <div class="card h-25">
-          <!-- Arm Status Card -->
-          <div class="card-body">
-            <h4 class="card-title">Arm Status</h4>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Axis 3</h5>
+                </div>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">0 deg</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Axis 4</h5>
+                </div>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">0 deg</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Axis 5</h5>
+                </div>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">0 deg</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Axis 6</h5>
+                </div>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">0 deg</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <h5 class="progress-label">Grip</h5>
+                </div>
+                <div class="col-md-9">
+                  <div class="progress my-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="0"
+                      aria-valuemin="-180" aria-valuemax="180">50%</div>
+                  </div>
+                </div>
+              </div>
+              <h5 class="mt-2">Zero Axes</h5>
+              <div class="btn-group my-2" role="group">
+                <button type="button" class="btn btn-primary">Axis 1</button>
+                <button type="button" class="btn btn-primary">Axis 5</button>
+                <button type="button" class="btn btn-primary">Axis 6</button>
+                <button type="button" class="btn btn-primary">Gripper</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="card h-25">
