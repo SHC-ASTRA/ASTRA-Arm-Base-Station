@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'OrbitControls';
+import { OBJLoader } from 'OBJLoader';
+
 // Element References for Quick Access
 var ros_status;
 
@@ -16,6 +20,17 @@ var battery_sub;
 var control_input_delay = 100; // milliseconds
 var last_control_input = 0;
 var control_input_enabled = true;
+
+var arm_canvas;
+var scene;
+var camera;
+var renderer;
+var geometry;
+var material;
+var cube;
+var cube2;
+var cube3;
+var controls;
 
 function setup() {
 
@@ -77,13 +92,6 @@ function setup() {
     ros_log('Connection to websocket server closed.');
   });
 
-
-  battery_sub = new ROSLIB.Topic({
-    ros: ros,
-    name: '/teensy/battery_status',
-    messageType: 'embedded_controller_relay/BatteryReport',
-  });
-
   // TODO: Arm pi performance reporter
 
   // TODO: Control rate output
@@ -92,12 +100,9 @@ function setup() {
 
   // TODO: Enable/shutdown service
 
-  battery_sub.subscribe(update_battery);
 
-  $('#enable_input').change(enable_control_input);
-  $('#disable_input').change(disable_control_input);
-
-  setup_controller();
+  setup_3d();
+  animate();
 }
 
 function setup_controller() {
@@ -133,6 +138,80 @@ function setup_controller() {
     false
   );
   // window.addEventListener("gc.button.hold", handle_button_input, false);
+}
+
+function setup_3d() {
+  arm_canvas = document.getElementById("arm_display");
+  const { width, height } = arm_canvas.getBoundingClientRect();
+  
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
+  renderer = new THREE.WebGLRenderer( { canvas: arm_canvas } );
+  renderer.setSize( width, height );
+  controls = new OrbitControls( camera, renderer.domElement );
+  geometry = new THREE.BoxGeometry(1,1,1);
+
+  // const objLoader = new OBJLoader();
+  // objLoader.load('assets/models/Axis0.obj', (root) => {
+  //   scene.add(root);
+  // });
+  
+  var material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
+  cube = new THREE.Mesh( geometry, material );
+  cube.position.y =  5;
+  scene.add( cube );
+
+  
+  const objLoader = new OBJLoader();
+  objLoader.load('assets/models/Axis0.obj', (root) => {
+    scene.add(root);
+  });
+  objLoader.load('assets/models/Rover.obj', (root) => {
+    scene.add(root);
+  });
+  
+
+  var material2 = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
+  cube2 = new THREE.Mesh( geometry, material2 );
+  cube2.position.x = -2;
+  scene.add( cube2 );
+
+  var material3 = new THREE.MeshPhongMaterial( { color: 0x0000ff } );
+  cube3 = new THREE.Mesh( geometry, material3 );
+  cube3.position.x = 2;
+  scene.add( cube3 );
+
+  const light = new THREE.HemisphereLight( 0xeeeeee, 0x101010, 1 );
+  scene.add( light );
+
+  const directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+  scene.add( directionalLight );
+
+  const size = 3;
+  const divisions = 30;
+  const gridHelper = new THREE.GridHelper( size, divisions );
+  gridHelper.position.y = -0.363-0.21/2;
+  scene.add( gridHelper );
+
+  // const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  // scene.add( light );
+
+  camera.position.z = 3;
+}
+
+function animate() {
+	requestAnimationFrame( animate );
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  cube2.rotation.x += 0.013;
+  cube2.rotation.y += 0.009;
+
+  cube3.rotation.x += 0.007;
+  cube3.rotation.y += 0.011;
+
+	renderer.render( scene, camera );
 }
 
 function handle_analog_input(event) {
@@ -186,7 +265,7 @@ function disable_control_input(event) {
 }
 
 function ros_log(log) {
-  time = new Date().toTimeString().split(' ')[0];
+  var time = new Date().toTimeString().split(' ')[0];
   ros_status.text('[' + time + '] ' + log + '\n' + ros_status.text());
 }
 
