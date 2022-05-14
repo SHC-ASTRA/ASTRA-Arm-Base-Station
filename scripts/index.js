@@ -25,11 +25,13 @@ var arm_canvas;
 var scene;
 var camera;
 var renderer;
-var geometry;
-var material;
-var cube;
-var cube2;
-var cube3;
+var base;
+var axis1;
+var axis2;
+var axis3;
+var axis4;
+var axis5;
+var axis6;
 var controls;
 
 function setup() {
@@ -143,55 +145,70 @@ function setup_controller() {
 function setup_3d() {
   arm_canvas = document.getElementById("arm_display");
   const { width, height } = arm_canvas.getBoundingClientRect();
-  
+
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
-  renderer = new THREE.WebGLRenderer( { canvas: arm_canvas } );
-  renderer.setSize( width, height );
-  controls = new OrbitControls( camera, renderer.domElement );
-  geometry = new THREE.BoxGeometry(1,1,1);
+  camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  renderer = new THREE.WebGLRenderer({ canvas: arm_canvas });
+  renderer.setSize(width, height);
+  controls = new OrbitControls(camera, renderer.domElement);
 
   // const objLoader = new OBJLoader();
   // objLoader.load('assets/models/Axis0.obj', (root) => {
   //   scene.add(root);
   // });
-  
-  var material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
-  cube = new THREE.Mesh( geometry, material );
-  cube.position.y =  5;
-  scene.add( cube );
 
-  
+  base = new THREE.Object3D();
+  var base_material = new THREE.MeshPhongMaterial({ color: 0x808080 });
   const objLoader = new OBJLoader();
-  objLoader.load('assets/models/Axis0.obj', (root) => {
-    scene.add(root);
+  objLoader.load('assets/models/Axis0.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = base_material;
+      }
+    });
+    base.add(obj);
   });
-  objLoader.load('assets/models/Rover.obj', (root) => {
-    scene.add(root);
+  objLoader.load('assets/models/Rover.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = base_material;
+      }
+    });
+    base.add(obj);
   });
+
+  var axis1_material = new THREE.MeshPhongMaterial({ color: 0xff6969 });
+  var axis4_material = new THREE.MeshPhongMaterial({ color: 0xffff69 });
+  var axis2_material = new THREE.MeshPhongMaterial({ color: 0x69ff69 });
+  var axis5_material = new THREE.MeshPhongMaterial({ color: 0x69ffff });
+  var axis3_material = new THREE.MeshPhongMaterial({ color: 0x6969ff });
+  var axis6_material = new THREE.MeshPhongMaterial({ color: 0xff69ff });
   
+  axis1 = new THREE.Object3D();
+  objLoader.load('assets/models/Axis1.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = axis1_material;
+      }
+    });
+    axis1.add(obj);
+  });
+  axis1.position.y+= 0.05203;
+  base.add(axis1);
 
-  var material2 = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
-  cube2 = new THREE.Mesh( geometry, material2 );
-  cube2.position.x = -2;
-  scene.add( cube2 );
+  scene.add(base);
 
-  var material3 = new THREE.MeshPhongMaterial( { color: 0x0000ff } );
-  cube3 = new THREE.Mesh( geometry, material3 );
-  cube3.position.x = 2;
-  scene.add( cube3 );
+  const light = new THREE.HemisphereLight(0xeeeeee, 0x303030, 0.5);
+  scene.add(light);
 
-  const light = new THREE.HemisphereLight( 0xeeeeee, 0x101010, 1 );
-  scene.add( light );
-
-  const directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
-  scene.add( directionalLight );
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  scene.add(directionalLight);
 
   const size = 3;
   const divisions = 30;
-  const gridHelper = new THREE.GridHelper( size, divisions );
-  gridHelper.position.y = -0.363-0.21/2;
-  scene.add( gridHelper );
+  const gridHelper = new THREE.GridHelper(size, divisions);
+  gridHelper.position.y = -0.363 - 0.21 / 2;
+  scene.add(gridHelper);
 
   // const light = new THREE.AmbientLight( 0x404040 ); // soft white light
   // scene.add( light );
@@ -200,18 +217,11 @@ function setup_3d() {
 }
 
 function animate() {
-	requestAnimationFrame( animate );
+  requestAnimationFrame(animate);
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  axis1.rotation.y += 0.01;
 
-  cube2.rotation.x += 0.013;
-  cube2.rotation.y += 0.009;
-
-  cube3.rotation.x += 0.007;
-  cube3.rotation.y += 0.011;
-
-	renderer.render( scene, camera );
+  renderer.render(scene, camera);
 }
 
 function handle_analog_input(event) {
