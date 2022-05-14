@@ -196,7 +196,23 @@ function setup_3d() {
   axis1.position.y+= 0.05203;
   base.add(axis1);
 
+  axis2 = new THREE.Object3D();
+  objLoader.load('assets/models/Axis2.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = axis2_material;
+      }
+    });
+    axis2.add(obj);
+  });
+  axis2.position.y+= 0.1889;
+  axis1.add(axis2);
+
   scene.add(base);
+
+  const pointlight = new THREE.PointLight(0xffffff, 0.2, 10)
+  pointlight.position.set(0,0.5,3);
+  scene.add(pointlight);
 
   const light = new THREE.HemisphereLight(0xeeeeee, 0x303030, 0.5);
   scene.add(light);
@@ -220,6 +236,7 @@ function animate() {
   requestAnimationFrame(animate);
 
   axis1.rotation.y += 0.01;
+  axis2.rotation.x += 0.01;
 
   renderer.render(scene, camera);
 }
