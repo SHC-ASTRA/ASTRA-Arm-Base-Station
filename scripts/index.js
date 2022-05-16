@@ -32,6 +32,12 @@ var axis3;
 var axis4;
 var axis5;
 var axis6;
+var grip_link_1r;
+var grip_link_2r;
+var grip_link_1l;
+var grip_link_2l;
+var jaw_r;
+var jaw_l;
 var controls;
 
 function setup() {
@@ -147,7 +153,7 @@ function setup_3d() {
   const { width, height } = arm_canvas.getBoundingClientRect();
 
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(75, width / height, 0.005, 50);
   renderer = new THREE.WebGLRenderer({ canvas: arm_canvas });
   renderer.setSize(width, height);
   controls = new OrbitControls(camera, renderer.domElement);
@@ -183,6 +189,8 @@ function setup_3d() {
   var axis5_material = new THREE.MeshPhongMaterial({ color: 0x69ffff });
   var axis3_material = new THREE.MeshPhongMaterial({ color: 0x6969ff });
   var axis6_material = new THREE.MeshPhongMaterial({ color: 0xff69ff });
+  var link_material = new THREE.MeshPhongMaterial({ color: 0x7f347f });
+  var gripper_material = new THREE.MeshPhongMaterial({ color: 0xeeeeee });
   
   axis1 = new THREE.Object3D();
   objLoader.load('assets/models/Axis1.obj', (obj) => {
@@ -207,6 +215,148 @@ function setup_3d() {
   });
   axis2.position.y+= 0.1889;
   axis1.add(axis2);
+
+  axis3 = new THREE.Object3D();
+  objLoader.load('assets/models/Axis3.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = axis3_material;
+      }
+    });
+    axis3.add(obj);
+  });
+  axis3.position.z+= 0.56;
+  axis2.add(axis3);
+
+  axis4 = new THREE.Object3D();
+  objLoader.load('assets/models/Axis4.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = axis4_material;
+      }
+    });
+    axis4.add(obj);
+  });
+  axis4.position.z+= 0.415;
+  axis3.add(axis4);
+
+  axis5 = new THREE.Object3D();
+  objLoader.load('assets/models/Axis5.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = axis5_material;
+      }
+    });
+    axis5.add(obj);
+  });
+  axis5.position.z+= 0.071;
+  axis5.position.y+= 0.02175;
+  axis4.add(axis5);
+
+  axis6 = new THREE.Object3D();
+  objLoader.load('assets/models/Axis6.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = axis6_material;
+      }
+    });
+    axis6.add(obj);
+  });
+  axis6.position.z+= 0.0325;
+  axis5.add(axis6);
+
+  
+  grip_link_1r = new THREE.Object3D();
+  grip_link_2r = new THREE.Object3D();
+  grip_link_1l = new THREE.Object3D();
+  grip_link_2l = new THREE.Object3D();
+
+  objLoader.load('assets/models/GripperLink.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = link_material;
+      }
+    });
+    grip_link_1r.add(obj);
+  });
+
+  objLoader.load('assets/models/GripperLink.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = link_material;
+      }
+    });
+    grip_link_2r.add(obj);
+  });
+
+  objLoader.load('assets/models/GripperLink.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = link_material;
+      }
+    });
+    grip_link_1l.add(obj);
+  });
+
+  objLoader.load('assets/models/GripperLink.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = link_material;
+      }
+    });
+    grip_link_2l.add(obj);
+  });
+  
+  grip_link_1r.position.z += 0.0865;
+  grip_link_1r.position.x += 0.013;
+  grip_link_1r.rotation.y += 1;
+  
+  grip_link_2r.position.z += 0.106;
+  grip_link_2r.position.x += 0.006;
+  grip_link_2r.rotation.y += 1;
+  
+  grip_link_1l.position.z += 0.0865;
+  grip_link_1l.position.x -= 0.013;
+  grip_link_1l.rotation.y -= 1;
+  
+  grip_link_2l.position.z += .106;
+  grip_link_2l.position.x -= 0.006;
+  grip_link_2l.rotation.y -= 1;
+
+  axis6.add(grip_link_1r);
+  axis6.add(grip_link_2r);
+  axis6.add(grip_link_1l);
+  axis6.add(grip_link_2l);
+
+  jaw_l = new THREE.Object3D();
+  jaw_r = new THREE.Object3D();
+
+  objLoader.load('assets/models/Jaw.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = gripper_material;
+      }
+    });
+    jaw_l.add(obj);
+  });
+
+  objLoader.load('assets/models/Jaw.obj', (obj) => {
+    obj.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = gripper_material;
+      }
+    });
+    jaw_r.add(obj);
+  });
+
+  jaw_l.position.z += 0.06;
+  jaw_r.position.z += 0.06;
+  jaw_r.rotation.z = 3.1415;
+  jaw_r.rotation.y -= 1;
+  jaw_l.rotation.y += 1;
+
+  grip_link_1r.add(jaw_r);
+  grip_link_1l.add(jaw_l);
 
   scene.add(base);
 
@@ -235,8 +385,20 @@ function setup_3d() {
 function animate() {
   requestAnimationFrame(animate);
 
-  axis1.rotation.y += 0.01;
-  axis2.rotation.x += 0.01;
+  axis1.rotation.y += 0.001;
+  axis2.rotation.x -= 0.001;
+  axis3.rotation.x += 0.001;
+  axis4.rotation.x += 0.0005;
+  axis5.rotation.y -= 0.0005;
+  axis6.rotation.z -= 0.0005;
+
+  grip_link_1r.rotation.y -= 0.001;
+  grip_link_2r.rotation.y -= 0.001;
+  jaw_r.rotation.y += 0.001;
+  
+  grip_link_1l.rotation.y += 0.001;
+  grip_link_2l.rotation.y += 0.001;
+  jaw_l.rotation.y -= 0.001;
 
   renderer.render(scene, camera);
 }
