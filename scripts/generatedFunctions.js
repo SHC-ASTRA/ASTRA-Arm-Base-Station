@@ -292,6 +292,6 @@ function Jfunc(in1) {
     }
     var mt4 = [0.0, 0.0, 0.0, 0.0, 0.0, t0];
     var J = math.reshape([mt1, mt2, mt3, mt4], [6, 6]);
-    return math.matrix(J)
+    return math.transpose(math.matrix(J))
 
 }

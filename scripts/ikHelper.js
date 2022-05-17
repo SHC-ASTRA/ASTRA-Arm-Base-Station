@@ -1,6 +1,8 @@
-function updateIK (theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, max_allowed_rates) {
+function updateIK(theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, max_allowed_rates) {
 
-    theta = math.multiply(theta,math.pi/180)
+    theta = math.multiply(theta, math.pi / 180)
+    
+    theta[5] *= -1;
 
     var LStick_Horiz = joys.LStick_Horiz
     var LStick_Vert = joys.LStick_Vert
@@ -67,30 +69,45 @@ function updateIK (theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, 
     }
 
     T_control.subset(math.index([0, 1, 2], 3), p_H_0)
+    //console.table(T_control._data);
+
     var R_control = T_control.subset(math.index([0, 1, 2], [0, 1, 2]))
+    //console.table(R_control._data);
 
     var X_dot_des_vec = [X_dot_des[0], X_dot_des[2], X_dot_des[1]]
+    X_dot_des_vec = math.transpose(math.matrix(X_dot_des_vec))
+    //console.table(X_dot_des_vec._data);
+
     var X_dot_des_vec_rotated = math.multiply(R_control, X_dot_des_vec)
+    //console.table(X_dot_des_vec_rotated._data);
 
     var X_dot_des_Now = [0, 0, 0, 0, 0, 0]
     X_dot_des_Now[0] = X_dot_des_vec_rotated._data[0]
     X_dot_des_Now[1] = X_dot_des_vec_rotated._data[1]
     X_dot_des_Now[2] = X_dot_des_vec_rotated._data[2]
     X_dot_des_Now = math.transpose(math.matrix(X_dot_des_Now))
+    //console.table(X_dot_des_Now._data);
+    //console.table(Jinv._data);
 
     var theta_rates = math.multiply(Jinv, X_dot_des_Now)
+    //console.table(theta_rates._data);
     theta_rates = math.add(theta_rates, delta_theta_dot)
 
     if (math.sum(math.larger(math.abs(theta_rates), max_allowed_rates)) > 0) {
-        max_rate = max(math.abs(dotDivide(theta_rates, max_allowed_rates)))
-        theta_rates = dotDivide(theta_rates, max_rate)
+        max_rate = math.max(math.abs(math.dotDivide(theta_rates, max_allowed_rates)))
+        theta_rates = math.dotDivide(theta_rates, max_rate)
+    }
+
+    if (relative_mode) {
+        theta_rates._data[5] *= -1;
+
     }
 
     return { theta_rates, Jdet, T_control, T_1_0, T_2_1, T_3_2, T_4_3, T_5_4, T_6_5, T_H_6, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0, p_1_0, p_2_0, p_3_0, p_4_0, p_5_0, p_6_0, p_H_0 }
 
 }
 
-function getPoints (T_1_0, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0) {
+function getPoints(T_1_0, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0) {
 
     var p_0 = math.transpose(math.matrix([0, 0, 0, 1]));
 
@@ -106,7 +123,7 @@ function getPoints (T_1_0, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0) {
 
 }
 
-function getTransforms (theta) {
+function getTransforms(theta) {
     var T_1_0 = T_1_to_0(theta);
     var T_2_1 = T_2_to_1(theta);
     var T_3_2 = T_3_to_2(theta);

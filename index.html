@@ -30,7 +30,9 @@
       "imports": {
         "three": "/js/three.module.js",
         "OrbitControls": "/js/OrbitControls.js",
-        "OBJLoader": "/js/OBJLoader.js"
+        "OBJLoader": "/js/OBJLoader.js",
+        "armdisplay": "/scripts/armdisplay.js",
+        "inputHandler": "/scripts/inputHandler.js"
       }
     }
   </script>
@@ -114,13 +116,13 @@
             <div class="card-body">
               <h4 class="card-title">Arm Dashboard</h4>
               <div class="d-flex flex-column">
-                <div class="btn-group btn-group-toggle d-flex my-2" data-toggle="buttons">
-                  <label class="btn btn-primary active">
-                    <input type="radio" name="enable_arm_control" id="enable_arm" autocomplete="off" checked />
+                <div class="btn-group btn-group-toggle d-flex my-2"  data-toggle="buttons">
+                  <label class="btn btn-outline-success" id="enable_arm_label">
+                    <input type="radio" name="enable_arm_control" id="enable_arm" autocomplete="off" />
                     Energize Arm
                   </label>
-                  <label class="btn btn-primary">
-                    <input type="radio" name="enable_arm_control" id="disable_arm" autocomplete="off" />
+                  <label class="btn btn-outline-danger active"  id="disable_arm_label">
+                    <input type="radio" name="enable_arm_control" id="disable_arm" autocomplete="off" checked />
                     De-energize Arm
                   </label>
                 </div>
