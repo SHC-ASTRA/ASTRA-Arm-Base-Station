@@ -19,8 +19,38 @@ var grip_link_1l;
 var grip_link_2l;
 var jaw_r;
 var jaw_l;
-var controls;
 
+var target;
+var control_transform;
+var x_arrow;
+var y_arrow;
+var z_arrow;
+var x_body;
+var y_body;
+var z_body;
+var x_head;
+var y_head;
+var z_head;
+
+var axis1_arrow;
+var axis4_arrow;
+var axis5_arrow;
+var axis6_arrow;
+var axis1_arrow_body;
+var axis4_arrow_body;
+var axis5_arrow_body;
+var axis6_arrow_body;
+var axis1_arrow_head;
+var axis4_arrow_head;
+var axis5_arrow_head;
+var axis6_arrow_head;
+
+
+var arrow_radius = 0.01;
+var arrow_head_radius = 0.02;
+var arrow_head_length = 0.02;
+var arrow_max_length = 0.1;
+var arrow_offset = 0.03;
 
 var axis1_offset = 0;
 var axis2_offset = 0;
@@ -30,16 +60,21 @@ var axis5_offset = 0;
 var axis6_offset = 0;
 var grip_offset = -90;
 
+
+var controls;
+
 function setup_3d() {
     arm_canvas = document.getElementById("arm_display");
     const { width, height } = arm_canvas.getBoundingClientRect();
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, width / height, 0.005, 50);
-    renderer = new THREE.WebGLRenderer({ canvas: arm_canvas, antialias: true});
+    renderer = new THREE.WebGLRenderer({ canvas: arm_canvas, antialias: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio( window.devicePixelRatio * 1.5 );
+    renderer.setPixelRatio(window.devicePixelRatio * 1.5);
     controls = new OrbitControls(camera, renderer.domElement);
+    controls.maxDistance = 4;
+    controls.minDistance = 0.1;
 
     // const objLoader = new OBJLoader();
     // objLoader.load('assets/models/Axis0.obj', (root) => {
@@ -148,6 +183,12 @@ function setup_3d() {
     axis6.position.z += 0.0325;
     axis5.add(axis6);
 
+    var target_material = new THREE.MeshPhongMaterial({ color: 0xffffff, opacity: 0.5, transparent: true });
+    var target_mesh = new THREE.SphereGeometry(0.01);
+    target = new THREE.Mesh(target_mesh, target_material);
+
+    axis6.add(target);
+    target.position.z += 0.2175;
 
     grip_link_1r = new THREE.Object3D();
     grip_link_2r = new THREE.Object3D();
@@ -243,6 +284,140 @@ function setup_3d() {
 
     scene.add(base);
 
+    var x_material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    var y_material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+    var z_material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+
+    control_transform = new THREE.Object3D();
+    x_arrow = new THREE.Object3D();
+    y_arrow = new THREE.Object3D();
+    z_arrow = new THREE.Object3D();
+
+    var cyl_geom = new THREE.CylinderGeometry(arrow_radius, arrow_radius, arrow_max_length);
+    var cone_geom = new THREE.ConeGeometry(arrow_head_radius, arrow_head_length);
+
+    x_body = new THREE.Mesh(cyl_geom, x_material);
+    x_body.position.y += arrow_max_length / 2;
+    x_head = new THREE.Mesh(cone_geom, x_material);
+    x_head.position.y += arrow_max_length + arrow_head_length / 2;
+    x_arrow.add(x_body);
+    x_arrow.add(x_head);
+
+    x_arrow.rotation.z = Math.PI / 2;
+    x_arrow.position.x -= arrow_offset;
+
+    y_body = new THREE.Mesh(cyl_geom, y_material);
+    y_body.position.y += arrow_max_length / 2;
+    y_head = new THREE.Mesh(cone_geom, y_material);
+    y_head.position.y += arrow_max_length + arrow_head_length / 2;
+    y_arrow.add(y_body);
+    y_arrow.add(y_head);
+
+    y_arrow.position.y += arrow_offset;
+
+    z_body = new THREE.Mesh(cyl_geom, z_material);
+    z_body.position.y += arrow_max_length / 2;
+    z_head = new THREE.Mesh(cone_geom, z_material);
+    z_head.position.y += arrow_max_length + arrow_head_length / 2;
+    z_arrow.add(z_body);
+    z_arrow.add(z_head);
+
+    z_arrow.rotation.x = Math.PI / 2;
+    z_arrow.position.z += arrow_offset;
+
+    control_transform.add(x_arrow);
+    control_transform.add(y_arrow);
+    control_transform.add(z_arrow);
+
+    var axis1_torus_radius = 0.2;
+    var axis1_torus_span = 1;
+    axis1_arrow = new THREE.Object3D();
+    var axis1_torus_geom = new THREE.TorusGeometry(axis1_torus_radius, arrow_radius, 8, 20, axis1_torus_span)
+    var axis1_circle_geom = new THREE.CircleGeometry(arrow_radius, 8);
+    axis1_arrow_body = new THREE.Mesh(axis1_torus_geom, x_material);
+    axis1_arrow_head = new THREE.Mesh(cone_geom, x_material);
+    var axis1_head_holder = new THREE.Object3D();
+    var axis1_arrow_cap = new THREE.Mesh(axis1_circle_geom, x_material);
+    axis1_arrow_head.position.x += axis1_torus_radius;
+    axis1_head_holder.add(axis1_arrow_head)
+    axis1_head_holder.rotation.z = axis1_torus_span;
+    axis1_arrow_cap.position.x += axis1_torus_radius;
+    axis1_arrow_cap.rotation.x += Math.PI / 2;
+    axis1_arrow.add(axis1_arrow_body);
+    axis1_arrow.add(axis1_head_holder);
+    axis1_arrow.add(axis1_arrow_cap);
+    axis1_arrow.rotation.x = Math.PI / 2;
+    axis1_arrow.rotation.z = Math.PI / 2 - axis1_torus_span / 2;
+    
+    axis1.add(axis1_arrow);
+
+    var axis4_torus_radius = 0.4;
+    var axis4_torus_span = 0.5;
+    axis4_arrow = new THREE.Object3D();
+    var axis4_torus_geom = new THREE.TorusGeometry(axis4_torus_radius, arrow_radius, 8, 20, axis4_torus_span)
+    var axis4_circle_geom = new THREE.CircleGeometry(arrow_radius, 8);
+    axis4_arrow_body = new THREE.Mesh(axis4_torus_geom, y_material);
+    axis4_arrow_head = new THREE.Mesh(cone_geom, y_material);
+    var axis4_head_holder = new THREE.Object3D();
+    var axis4_arrow_cap = new THREE.Mesh(axis4_circle_geom, y_material);
+    axis4_arrow_head.position.x += axis4_torus_radius;
+    axis4_head_holder.add(axis4_arrow_head)
+    axis4_head_holder.rotation.z = axis4_torus_span;
+    axis4_arrow_cap.position.x += axis4_torus_radius;
+    axis4_arrow_cap.rotation.x += Math.PI / 2;
+    axis4_arrow.add(axis4_arrow_body);
+    axis4_arrow.add(axis4_head_holder);
+    axis4_arrow.add(axis4_arrow_cap);
+    axis4_arrow.rotation.y = -Math.PI / 2;
+    axis4_arrow.rotation.z = - axis4_torus_span / 2;
+    axis4.add(axis4_arrow);
+
+    var axis5_torus_radius = 0.3;
+    var axis5_torus_span = 0.7;
+    axis5_arrow = new THREE.Object3D();
+    var axis5_torus_geom = new THREE.TorusGeometry(axis5_torus_radius, arrow_radius, 8, 20, axis5_torus_span)
+    var axis5_circle_geom = new THREE.CircleGeometry(arrow_radius, 8);
+    axis5_arrow_body = new THREE.Mesh(axis5_torus_geom, x_material);
+    axis5_arrow_head = new THREE.Mesh(cone_geom, x_material);
+    var axis5_head_holder = new THREE.Object3D();
+    var axis5_arrow_cap = new THREE.Mesh(axis5_circle_geom, x_material);
+    axis5_arrow_head.position.x += axis5_torus_radius;
+    axis5_head_holder.add(axis5_arrow_head)
+    axis5_head_holder.rotation.z = axis5_torus_span;
+    axis5_arrow_cap.position.x += axis5_torus_radius;
+    axis5_arrow_cap.rotation.x += Math.PI / 2;
+    axis5_arrow.add(axis5_arrow_body);
+    axis5_arrow.add(axis5_head_holder);
+    axis5_arrow.add(axis5_arrow_cap);
+    axis5_arrow.rotation.x = Math.PI / 2;
+    axis5_arrow.rotation.z = Math.PI / 2 - axis5_torus_span / 2;
+    axis5.add(axis5_arrow);
+
+    var axis6_torus_radius = 0.1;
+    var axis6_torus_span = 4.5;
+    axis6_arrow = new THREE.Object3D();
+    var axis6_torus_geom = new THREE.TorusGeometry(axis6_torus_radius, arrow_radius, 8, 20, axis6_torus_span)
+    var axis6_circle_geom = new THREE.CircleGeometry(arrow_radius, 8);
+    axis6_arrow_body = new THREE.Mesh(axis6_torus_geom, z_material);
+    axis6_arrow_head = new THREE.Mesh(cone_geom, z_material);
+    var axis6_head_holder = new THREE.Object3D();
+    var axis6_arrow_cap = new THREE.Mesh(axis6_circle_geom, z_material);
+    axis6_arrow_head.position.x += axis6_torus_radius;
+    axis6_head_holder.add(axis6_arrow_head)
+    axis6_head_holder.rotation.z = axis6_torus_span;
+    axis6_arrow_cap.position.x += axis6_torus_radius;
+    axis6_arrow_cap.rotation.x += Math.PI / 2;
+    axis6_arrow.add(axis6_arrow_body);
+    axis6_arrow.add(axis6_head_holder);
+    axis6_arrow.add(axis6_arrow_cap);
+    // axis6_arrow.rotation.x = Math.PI / 2;
+    axis6_arrow.rotation.z = -Math.PI / 2 - axis6_torus_span / 2;
+    axis6_arrow.position.z += 0.1;
+    axis5.add(axis6_arrow);
+    
+
+    scene.add(control_transform);
+
     const pointlight = new THREE.PointLight(0xffffff, 0.2, 10)
     pointlight.position.set(0, 0.5, 3);
     scene.add(pointlight);
@@ -315,4 +490,44 @@ function set_axes(thetas) {
     set_axis_6(thetas[5]);
 }
 
-export { setup_3d, animate, set_grip, set_axes }
+function set_control_frame(relative_mode, direct_rotation_mode) {
+    var vector_target = new THREE.Vector3();
+    var quat_target = new THREE.Quaternion();
+    target.getWorldPosition(vector_target);
+    target.getWorldQuaternion(quat_target);
+    control_transform.position.copy(vector_target);
+
+    if (!direct_rotation_mode) {
+        y_arrow.visible = true;
+        z_arrow.visible = true;
+        axis4_arrow.visible = false;
+        axis5_arrow.visible = false;
+        axis6_arrow.visible = false;
+        if (!relative_mode) {
+            x_arrow.visible = false;
+            axis1_arrow.visible = true;
+            control_transform.rotation.y = axis1.rotation.y;
+            control_transform.rotation.x = 0;
+            control_transform.rotation.z = 0;
+        }
+        else {
+            x_arrow.visible = true;
+            axis1_arrow.visible = false;
+            control_transform.setRotationFromQuaternion(quat_target);
+        }
+    }
+    else {
+        x_arrow.visible = false;
+        y_arrow.visible = false;
+        z_arrow.visible = false;
+        axis1_arrow.visible = false;
+        axis4_arrow.visible = true;
+        axis5_arrow.visible = true;
+        axis6_arrow.visible = true;
+    }
+
+
+
+}
+
+export { setup_3d, animate, set_grip, set_axes, set_control_frame }

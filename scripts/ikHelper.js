@@ -63,7 +63,7 @@ function updateIK(theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, m
     delta_theta_dot[0] += fast_axis1_speed * (dpad_left * 1 + dpad_right * -1)
 
     if (relative_mode) {
-        var T_control = math.multiply(T_5_0, [[0, 1, 0, 0], [-1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+        var T_control = math.multiply(T_H_0, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
     } else {
         var T_control = T_1_0;
     }
@@ -103,7 +103,7 @@ function updateIK(theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, m
 
     }
 
-    return { theta_rates, Jdet, T_control, T_1_0, T_2_1, T_3_2, T_4_3, T_5_4, T_6_5, T_H_6, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0, p_1_0, p_2_0, p_3_0, p_4_0, p_5_0, p_6_0, p_H_0 }
+    return { theta_rates, Jdet, T_control, T_1_0, T_2_1, T_3_2, T_4_3, T_5_4, T_6_5, T_H_6, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0, p_1_0, p_2_0, p_3_0, p_4_0, p_5_0, p_6_0, p_H_0, relative_mode, direct_rotation_mode }
 
 }
 
