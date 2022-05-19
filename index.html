@@ -217,10 +217,10 @@
                 </div>
                 <h5 class="mt-2">Zero Axes</h5>
                 <div class="btn-group my-2" role="group">
-                  <button type="button" class="btn btn-primary">Axis 1</button>
-                  <button type="button" class="btn btn-primary">Axis 5</button>
-                  <button type="button" class="btn btn-primary">Axis 6</button>
-                  <button type="button" class="btn btn-primary">Gripper</button>
+                  <button type="button" class="btn btn-primary" id="zero_axis1">Axis 1</button>
+                  <button type="button" class="btn btn-primary" id="zero_axis5">Axis 5</button>
+                  <button type="button" class="btn btn-primary" id="zero_axis6">Axis 6</button>
+                  <button type="button" class="btn btn-primary" id="zero_grip">Gripper</button>
                 </div>
               </div>
             </div>
@@ -234,9 +234,15 @@
             <textarea class="form-control h-100" id="ros_status_output" readonly></textarea>
           </div>
         </div>
+        <div class="card" style="width: 150px;">
+          <!-- Laser Card -->
+          <div class="card-body d-flex justify-content-center">
+            <button id="laserToggleButton" type="button" class="btn btn-danger">Enable Laser</button>
+          </div>
+        </div>
         <div class="card w-25">
           <!-- Game Controller Card -->
-          <div class="card-body">
+          <div class="card-body d-flex align-items-center">
             <div class="input-group">
               <select id="controllerDropdown" class="custom-select">
                 <option value="-1" selected>Choose a controller...</option>

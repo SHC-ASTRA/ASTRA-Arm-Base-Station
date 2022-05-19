@@ -39,6 +39,13 @@ function setup() {
   $('#rq_home_low').click(request_homing_low);
   $('#force_home').click(force_homing);
   $('#force_home_low').click(force_homing_low);
+  $('#laserToggleButton').click(toggle_laser);
+  $('#zero_axis1').click(zero_axis_1);
+  $('#zero_axis5').click(zero_axis_5);
+  $('#zero_axis6').click(zero_axis_6);
+  $('#zero_grip').click(zero_grip);
+  $("#enable_arm").change(enable_arm);
+  $("#disable_arm").change(disable_arm);
 
   // Establish all element references for later use
   ros_status = $('#ros_status_output');
@@ -105,7 +112,7 @@ function control_loop() {
   // Send command to arm
 
   for (let index = 0; index < theta.length; index++) {
-    theta[index] += theta_rates[index] * 200 / 1000;
+    theta[index] += theta_rates[index] * 20 / 1000;
   }
   update_axes(theta);
 
@@ -116,7 +123,6 @@ function control_loop() {
   disp.set_axes(theta);
   disp.set_control_frame(out.relative_mode, out.direct_rotation_mode);
   disp.set_grip(1);
-
 }
 
 function ros_log(log) {
@@ -134,43 +140,97 @@ function update_axes(thetas) {
 
 function request_homing() {
   ros_log("Requesting Homing")
-  homing(false,false);
+  homing(false, false);
 }
 function request_homing_low() {
   ros_log("Requesting Low Homing")
-  homing(true,false);
+  homing(true, false);
 }
 function force_homing() {
   ros_log("Forcing Homing")
-  homing(false,true);
+  homing(false, true);
 }
 function force_homing_low() {
   ros_log("Forcing Low Homing")
-  homing(true,true);
+  homing(true, true);
 }
 function homing(under10deg, force) {
 
 }
 
 
-function check_arm_enable()
-{
+function check_arm_enable() {
 
 }
 
-function enable_arm()
-{
+function enable_arm() {
   ros_log("Enabling Arm");
   set_arm_enable_state(true);
 }
-function disable_arm()
-{
+function disable_arm() {
   ros_log("Disabling Arm");
   set_arm_enable_state(false);
 }
-function set_arm_enable_state(enabled)
-{
+function set_arm_enable_state(enabled) {
 
+}
+function set_enable_button_state(enabled) {
+  if (enable_arm) {
+    $("#enable_arm").parent().addClass("active");
+    $("#disable_arm").parent().removeClass("active");
+  }
+  else{
+    $("#enable_arm").parent().removeClass("active");
+    $("#disable_arm").parent().addClass("active");
+  }
+}
+
+function zero_axis_1() {
+  ros_log("Zeroing Axis 1");
+  zero_axis(1);
+}
+function zero_axis_5() {
+  ros_log("Zeroing Axis 5");
+  zero_axis(5);
+}
+function zero_axis_6() {
+  ros_log("Zeroing Axis 6");
+  zero_axis(6);
+}
+function zero_grip() {
+  ros_log("Zeroing Grip");
+  zero_axis(7);
+}
+function zero_axis(axisNum) {
+
+}
+
+function toggle_laser() {
+  var button = $("#laserToggleButton");
+  var currently_enabled = (button.text() == "Enable Laser");
+  var now_enabled = !currently_enabled;
+  set_laser_button_state(now_enabled);
+
+  if (now_enabled) {
+    ros_log("Enabling Laser");
+  }
+  else {
+    ros_log("Disabling Laser");
+  }
+
+}
+function set_laser_button_state(now_enabled) {
+  var button = $("#laserToggleButton");
+  if (now_enabled) {
+    button.removeClass("btn-success");
+    button.addClass("btn-danger");
+    button.text("Enable Laser");
+  }
+  else {
+    button.addClass("btn-success");
+    button.removeClass("btn-danger");
+    button.text("Disable Laser");
+  }
 }
 
 // Run Setup after the document loads
