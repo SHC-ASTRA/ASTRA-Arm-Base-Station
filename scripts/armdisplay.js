@@ -467,7 +467,7 @@ function set_axis_5(theta5) {
 }
 
 function set_axis_6(theta6) {
-    axis6.rotation.z = -(theta6 + axis6_offset) * Math.PI / 180;
+    axis6.rotation.z = (theta6 + axis6_offset) * Math.PI / 180;
 }
 
 function set_grip(grip_pct) {

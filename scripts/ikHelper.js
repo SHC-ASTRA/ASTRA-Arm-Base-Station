@@ -2,7 +2,7 @@ function updateIK(theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, m
 
     theta = math.multiply(theta, math.pi / 180)
     
-    theta[5] *= -1;
+    // theta[5] *= -1;
 
     var LStick_Horiz = joys.LStick_Horiz
     var LStick_Vert = joys.LStick_Vert
@@ -96,11 +96,6 @@ function updateIK(theta, joys, butt, dpad, speed, rot_speed, fast_axis1_speed, m
     if (math.sum(math.larger(math.abs(theta_rates), max_allowed_rates)) > 0) {
         max_rate = math.max(math.abs(math.dotDivide(theta_rates, max_allowed_rates)))
         theta_rates = math.dotDivide(theta_rates, max_rate)
-    }
-
-    if (relative_mode) {
-        theta_rates._data[5] *= -1;
-
     }
 
     return { theta_rates, Jdet, T_control, T_1_0, T_2_1, T_3_2, T_4_3, T_5_4, T_6_5, T_H_6, T_2_0, T_3_0, T_4_0, T_5_0, T_6_0, T_H_0, p_1_0, p_2_0, p_3_0, p_4_0, p_5_0, p_6_0, p_H_0, relative_mode, direct_rotation_mode }
