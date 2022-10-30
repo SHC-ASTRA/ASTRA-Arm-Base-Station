@@ -1,5 +1,5 @@
-import * as disp from 'armdisplay'
-import * as inputHandler from 'inputHandler'
+import * as disp from './armdisplay'
+import * as inputHandler from './inputHandler'
 
 // Element References for Quick Access
 var ros_status;
