@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'OrbitControls';
-import { OBJLoader } from 'OBJLoader';
+import * as THREE from '../js/three.module';
+import { OrbitControls } from '../js/OrbitControls';
+import { OBJLoader } from '../js/OBJLoader';
 
 var arm_canvas;
 var scene;
